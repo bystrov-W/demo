@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 //Соединение с базой данных
-$host = 'localhost';
-$db = 'cf41307_41';
+$host = '127.0.0.1';
+$db = 'todo';
 $charset = 'utf8';
-$userDB = 'cf41307_41';
-$pass = '1';
+$userDB = 'todo';
+$pass = '';
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 	
 $opt = array(
