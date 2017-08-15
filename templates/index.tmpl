@@ -1,0 +1,119 @@
+﻿	<div class="section">
+		<div class="container">
+			<div class="row">
+			<h1>Список дел</h1>
+				<div class="col-sm-6">
+				<form role="form" method="post">
+					<div class="form-group">
+						<label for="text">Название</label>
+						<input type="text" class="form-control" name="description" value="{% if action is defined and action == 'change' %}{{ change }}{% endif %}">
+						<input type="hidden" name="idForChanging" value="{% if action is defined and action == 'change' %} {{ idForChanging }}{% endif %}">
+					</div>
+					<button type="submit" class="btn btn-success" name="add">Сохранить</button>
+				</form>
+				</div>
+				<div class="col-sm-6">
+				<form role="form" method="post">
+					<div class="form-group">
+						<label for="text">Сортировать по</label>
+						<select class="form-control" name="sortOption">
+							<option value="1">задаче</option>
+							<option value="2">статусу</option>
+							<option value="3">дате добавления</option>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-info" name="sort">Сортировать</button>
+				</form>
+				</div>
+			</div>
+			<br/>
+			<div class="row">
+				<div class="col-sm-7">
+					<h2>Задачи, поставленные вами</h2>
+					<table class="table">
+						<tr>
+							<th>Задача</th>
+							<th>Статус</th>
+							<th>Дата добавления</th>
+							<th>Ответственный</th>
+							<th></th>
+							<th>Операции</th>
+						</tr>
+						{% for row in rows %}
+							{% if row.is_done == 0 %}
+								{% set status = 'Не выполнено' %}
+							{% else %}
+								{% set status = 'Выполнено' %}
+							{% endif %}
+							<tr>
+							<td>{{ row.description }}</td>
+							<td>{{ status }}</td>
+							<td>{{ row.date_added }}</td>
+							<td>{% for key,value in listOfUsers %}
+									{% if row.assigned_user_id == value.id %}
+										{{ value.login }}
+									{% endif %}
+								{% endfor %}
+							</td>
+							<td>
+								<form role="form" method="post" class="form-inline">
+									<div class="form-group">
+										<select class="form-control" name="assignUser">
+											{% for key,value in listOfUsers %}
+												{% if value.login is defined and value.login != session.user %}
+													<option value="{{ value.id }}">{{ value.login }}</option>
+												{% endif %}
+											{% endfor %}
+										</select>
+										<input type="hidden" name="idForChanging" value="{{ row.id }}">
+										<button type="submit" class="btn btn-primary btn-xs">Назначить</button>
+									</div>
+								</form>
+							</td>
+							<td>
+								<span><a href="?action=change&id={{ row.id }}">Изменить</a></span>
+								&nbsp;&nbsp;&nbsp;
+								<span><a href="?action=done&id={{ row.id }}">Выполнить</a></span>
+								&nbsp;&nbsp;&nbsp;
+								<span><a href="?action=delete&id={{ row.id }}">Удалить</a>
+							</td>
+						{% endfor %}
+					</table>
+				</div>
+			<!-- вторая таблица -->
+				<div class="col-sm-5">
+					<h2>Задачи, поставленные для вас</h2>
+					<table class="table">
+						<tr>
+							<th>Задача</th>
+							<th>Статус</th>
+							<th>Дата добавления</th>
+							<th>Операции</th>
+						</tr>
+						{% for roww in rows2 %}
+							{% if roww.is_done == 0 %}
+								{% set status = 'Не выполнено' %}
+							{% else %}
+								{% set status = 'Выполнено' %}
+							{% endif %}
+							<tr>
+								<td>{{ roww.description }}</td>
+								<td>{{ status }}</td>
+								<td>{{ roww.date_added }}</td>
+								<td><span><a href="?action=done&id={{ roww.id }}">Выполнить</a></span></td>
+							</tr>
+						{% endfor %}
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted"><br/><br/><br/><br/></p>
+      </div>
+    </footer>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	</body>
+</html>
